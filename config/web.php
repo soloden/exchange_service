@@ -7,6 +7,12 @@ $config = [
     'id' => 'api',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'modules' => [
+        'v1' => [
+            'class' => 'app\modules\api\v1\Module',
+            'basePath' => '@app/modules/api/v1'
+        ],
+    ],
     'components' => [
         'request' => [
             'enableCookieValidation' => false,
