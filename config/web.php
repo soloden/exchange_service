@@ -57,6 +57,16 @@ $config = [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
+            'rules' => [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'v1/exchange',
+                'pluralize' => false,
+                'prefix' => 'api',
+                'only' => ['index', 'view'],
+                'tokens' => [
+                    '{id}' => '<id:[A-Z-]{3}>'
+                ]
+            ],
         ],
     ],
     'params' => $params,
