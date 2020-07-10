@@ -1,0 +1,49 @@
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php:7.2-fpm
+    container_name: currency_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - currency-network
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: currency_webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - currency-network
+
+  redis:
+    image: redis
+    container_name: currency_redis
+    command: ["sh", "-c", "exec redis-server --requirepass \"${REDIS_PASSWORD}\""]
+    networks:
+      - currency-network
+
+#Docker Networks
+networks:
+  currency-network:
+    driver: bridge
